@@ -6,6 +6,7 @@ import io
 from datetime import datetime
 import asyncio
 import random
+import pyfiglet
 
 bot = discord.Client()
 bot = commands.Bot(command_prefix=',', self_bot=True, intents=discord.Intents.all())
@@ -76,7 +77,7 @@ async def screenshot(ctx, url: str):
     if not url.startswith('http://') and not url.startswith('https://'):
         url = 'http://' + url
 
-    access_key = 'get ur token at screenshotone.com'
+    access_key = 'KkYgqylu-i6R0g'
     screenshot_url = f'https://api.screenshotone.com/take?url={url}&access_key={access_key}'
     await ctx.send(screenshot_url)
 
@@ -204,11 +205,134 @@ async def serverbanner(ctx):
     else:
         await ctx.send('This server has no banner.')
 
+@bot.command(name="ascii", description="Converts text to ascii")
+async def ascii(ctx, *, text):
+    if ctx.author.id != 1100478181242323068:
+        return
+
+    await ctx.message.delete()
+
+    ascii_art = pyfiglet.figlet_format(text)
+    await ctx.send(f'```{ascii_art}```')    
+
+@bot.command(name="streaming", description="Sets a streaming status")
+async def streaming(ctx, *, name):
+    if ctx.author.id != 1100478181242323068:
+        return
+
+    await ctx.message.delete()
+
+    await bot.change_presence(activity=discord.Streaming(name=name, url="https://www.twitch.tv/settings"))
+
+@bot.command(name="playing", description="Sets a playing status")
+async def playing(ctx, *, name):
+    if ctx.author.id != 1100478181242323068:
+        return
+
+    await ctx.message.delete()
+
+    await bot.change_presence(activity=discord.Game(name=name))
+
+@bot.command(name="watching", description="Sets a watching status")
+async def watching(ctx, *, name):
+    if ctx.author.id != 1100478181242323068:
+        return
+
+    await ctx.message.delete()
+
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=name))
+
+@bot.command(name="listening", description="Sets a listening status")
+async def listening(ctx, *, name):
+    if ctx.author.id != 1100478181242323068:
+        return
+
+    await ctx.message.delete()
+
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=name))
+
+@bot.command(name="stop", description="Stops the self bots status")
+async def stop(ctx):
+    if ctx.author.id != 1100478181242323068:
+        return
+
+    await ctx.message.delete()
+
+    await bot.change_presence(activity=None)
+
+@bot.command(name="ping", description="Shows the bots latency")
+async def ping(ctx):
+    if ctx.author.id != 1100478181242323068:
+        return
+
+    await ctx.message.delete()
+
+    await ctx.send(f'Pong! {round(bot.latency * 1000)}ms')
+
+@bot.command(name="uptime", description="Shows the bots uptime")
+async def uptime(ctx):
+    if ctx.author.id != 1100478181242323068:
+        return
+
+    await ctx.message.delete()
+
+    uptime_duration = datetime.now() - bot.uptime
+    hours, remainder = divmod(int(uptime_duration.total_seconds()), 3600)
+    minutes, seconds = divmod(remainder, 60)
+    uptime_str = f'{hours}h {minutes}m {seconds}s'
+
+    await ctx.send(f'{uptime_str}')
+
+@bot.command(name="massreact", description="Reacts to messagesthe channel")
+async def massreact(ctx, emote):
+    if ctx.author.id != 1100478181242323068:
+        return
+
+    await ctx.message.delete()
+
+
+    messages = await ctx.message.channel.history(limit=15).flatten()
+    for message in messages:
+        await message.add_reaction(emote)
+
+@bot.command(name="reactuser", description="Keep reacting to a user's messages")
+async def reactuser(ctx, member: discord.Member, emote):
+    if ctx.author.id != 1100478181242323068:
+        return
+
+    await ctx.message.delete()
+
+    def check(message):
+        return message.author == member
+
+    try:
+        while True:
+            message = await bot.wait_for('message', check=check)
+            await message.add_reaction(emote)
+    except asyncio.CancelledError:
+        pass
+
+@bot.command(name="stopreact", description="Stops reacting to a user's messages")
+async def stopreact(ctx):
+    if ctx.author.id != 1100478181242323068:
+        return
+
+    await ctx.message.delete()
+
+    def check(message):
+        return message.author == member
+
+    try:
+        while True:
+            message = await bot.wait_for('message', check=check)
+            await message.remove_reaction(emote)
+    except asyncio.CancelledError:
+        pass
+
 @bot.event
 async def on_ready():
     print('Bot is ready!')
     print(f'Logged in as {bot.user.name} - {bot.user.id}')
-    print('------')
 
 @bot.event
 async def on_command_error(ctx, error):
