@@ -7,16 +7,29 @@ from datetime import datetime
 import asyncio
 import random
 import pyfiglet
+import json
+
+def load_config(file_path):
+    with open(file_path, 'r') as config_file:
+        config = json.load(config_file)
+    return config
+
+config = load_config('config.json')
+
+TOKEN = config['token']
+PREFIX = config['prefix']
+OWNER = config['owner_id']
 
 bot = discord.Client()
-bot = commands.Bot(command_prefix=',', self_bot=True, intents=discord.Intents.all())
-bot.remove_command('help')
+bot = commands.Bot(command_prefix=PREFIX, self_bot=True,
+                   intents=discord.Intents.all())
+bot.remove_command("help")
 
 bot.uptime = datetime.now()
 
 @bot.command(aliases=['uinfo', 'ui'], description='Shows user info')
 async def userinfo(ctx, *, user: discord.User = None):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -42,7 +55,7 @@ async def userinfo(ctx, *, user: discord.User = None):
 
 @bot.command(aliases=['sinfo', 'si'], description='Displays information about the server')
 async def serverinfo(ctx):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -69,7 +82,7 @@ async def serverinfo(ctx):
 
 @bot.command(aliases=['ss'], description='Takes a screenshot of the specified webpage.')
 async def screenshot(ctx, url: str):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -83,7 +96,7 @@ async def screenshot(ctx, url: str):
 
 @bot.command(aliases=['badtr'], description='Badly translates words into other words.')
 async def badtranslate(ctx, *, text: str = None):
-    if ctx.author.id not in 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -101,7 +114,7 @@ async def badtranslate(ctx, *, text: str = None):
 
 @bot.command(aliases=['h'], description='WawaSB help')
 async def help(ctx):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -124,7 +137,7 @@ async def help(ctx):
 
 @bot.command(aliases=["clear", "cl", "c"], description="Purges messages")
 async def purge(ctx, amount: int):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -137,7 +150,7 @@ async def purge(ctx, amount: int):
 
 @bot.command(aliases=["av"], description="Shows the avatar of the specified user")
 async def avatar(ctx, *, user: discord.User = None):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -154,7 +167,7 @@ async def avatar(ctx, *, user: discord.User = None):
 
 @bot.command(aliases=["banr"], description="Shows the banner of the specified user")
 async def banner(ctx, *, user: discord.User = None):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -171,7 +184,7 @@ async def banner(ctx, *, user: discord.User = None):
 
 @bot.command(aliases=["sicon"], description="Shows the server icon")
 async def servericon(ctx):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -189,7 +202,7 @@ async def servericon(ctx):
 
 @bot.command(aliases=["sbanner"], description="Shows the server banner")
 async def serverbanner(ctx):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -207,7 +220,7 @@ async def serverbanner(ctx):
 
 @bot.command(name="ascii", description="Converts text to ascii")
 async def ascii(ctx, *, text):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -217,7 +230,7 @@ async def ascii(ctx, *, text):
 
 @bot.command(name="streaming", description="Sets a streaming status")
 async def streaming(ctx, *, name):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -226,7 +239,7 @@ async def streaming(ctx, *, name):
 
 @bot.command(name="playing", description="Sets a playing status")
 async def playing(ctx, *, name):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -235,7 +248,7 @@ async def playing(ctx, *, name):
 
 @bot.command(name="watching", description="Sets a watching status")
 async def watching(ctx, *, name):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -244,7 +257,7 @@ async def watching(ctx, *, name):
 
 @bot.command(name="listening", description="Sets a listening status")
 async def listening(ctx, *, name):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -253,7 +266,7 @@ async def listening(ctx, *, name):
 
 @bot.command(name="stop", description="Stops the self bots status")
 async def stop(ctx):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -262,7 +275,7 @@ async def stop(ctx):
 
 @bot.command(name="ping", description="Shows the bots latency")
 async def ping(ctx):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -271,7 +284,7 @@ async def ping(ctx):
 
 @bot.command(name="uptime", description="Shows the bots uptime")
 async def uptime(ctx):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -285,7 +298,7 @@ async def uptime(ctx):
 
 @bot.command(name="massreact", description="Reacts to messagesthe channel")
 async def massreact(ctx, emote):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -297,7 +310,7 @@ async def massreact(ctx, emote):
 
 @bot.command(name="reactuser", description="Keep reacting to a user's messages")
 async def reactuser(ctx, member: discord.Member, emote):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -314,7 +327,7 @@ async def reactuser(ctx, member: discord.Member, emote):
 
 @bot.command(name="stopreact", description="Stops reacting to a user's messages")
 async def stopreact(ctx):
-    if ctx.author.id != 1100478181242323068:
+    if ctx.author.id != OWNER:
         return
 
     await ctx.message.delete()
@@ -340,4 +353,4 @@ async def on_command_error(ctx, error):
         return
     raise error
 
-bot.run('token', bot=False)
+bot.run(TOKEN, bot=False)
